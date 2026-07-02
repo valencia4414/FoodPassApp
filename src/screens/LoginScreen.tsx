@@ -24,6 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, BorderRadius, Typography } from '../theme/colors';
+import { Image } from 'react-native';
 
 // Props que recibe esta pantalla desde el Navigator
 interface LoginScreenProps {
@@ -80,11 +81,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             {/* === SECCIÓN DEL LOGO === */}
             <View style={styles.logoSection}>
               {/* Ícono del logo — cuadrado con fondo verde oscuro */}
-              <View style={styles.logoIcon}>
-                <MaterialIcons name="restaurant-menu" size={36} color={Colors.primaryContainer} />
+             <View style={styles.logoIcon}>
+               <Image
+                 source={require('../../assets/logo_food.jpeg')}
+                   style={styles.logoImage}
+                     resizeMode="contain"
+                       />
               </View>
-              <Text style={styles.appTitle}>FoodPass</Text>
-              <Text style={styles.appSubtitle}>The Artisanal Ledger</Text>
+              
             </View>
 
             {/* === FORMULARIO === */}
@@ -473,4 +477,9 @@ const styles = StyleSheet.create({
     color: Colors.onSurfaceVariant,
     letterSpacing: 1.2,
   },
+
+  logoImage: {
+  width: 900,
+  height: 100,
+},
 });
