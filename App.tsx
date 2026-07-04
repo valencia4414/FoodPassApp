@@ -11,10 +11,6 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import AppNavigator from './src/navigation/AppNavigator';
-<<<<<<< HEAD
-import { AuthProvider } from './src/context/AuthContext';
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
 
 export default function App() {
   return (
@@ -22,23 +18,12 @@ export default function App() {
     // Sin esto, el contenido podría quedar detrás del notch del iPhone
     // o de la barra de navegación de Android.
     <SafeAreaProvider>
-<<<<<<< HEAD
-      <AuthProvider>
-        {/* StatusBar controla si los íconos de la barra (hora, batería, wifi)
-            son claros u oscuros. "dark" significa íconos oscuros sobre fondo claro. */}
-        <StatusBar style="dark" backgroundColor="#f0ffd8" />
-
-        {/* AppNavigator es quien decide qué pantalla mostrar */}
-        <AppNavigator />
-      </AuthProvider>
-=======
       {/* StatusBar controla si los íconos de la barra (hora, batería, wifi)
           son claros u oscuros. "dark" significa íconos oscuros sobre fondo claro. */}
       <StatusBar style="dark" backgroundColor="#f0ffd8" />
 
       {/* AppNavigator es quien decide qué pantalla mostrar */}
       <AppNavigator />
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
     </SafeAreaProvider>
   );
 }

@@ -13,28 +13,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/shared/Header';
-<<<<<<< HEAD
-import { Colors, BorderRadius, Typography } from '../theme/colors';
-import InfoModal from '../components/shared/InfoModal';
-=======
 import { Colors, BorderRadius } from '../theme/colors';
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
 
 export default function CanjeScreen() {
   const [activeTab, setActiveTab] = useState<'qr' | 'codigo'>('qr');
 
-<<<<<<< HEAD
-  // Estados para modales explicativos
-  const [showLunchesInfo, setShowLunchesInfo] = useState(false);
-  const [showPointsInfo, setShowPointsInfo] = useState(false);
-  const [showQRInfo, setShowQRInfo] = useState(false);
-
-  // Estados para detalle del canje histórico
-  const [selectedCanje, setSelectedCanje] = useState<any | null>(null);
-  const [showCanjeModal, setShowCanjeModal] = useState(false);
-
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <Header title="Canje de Almuerzo" />
@@ -46,24 +29,6 @@ export default function CanjeScreen() {
       >
         {/* === ESTADÍSTICAS RÁPIDAS === */}
         <View style={styles.statsRow}>
-<<<<<<< HEAD
-          <TouchableOpacity
-            style={styles.statChip}
-            activeOpacity={0.8}
-            onPress={() => setShowLunchesInfo(true)}
-          >
-            <Text style={styles.statChipNumber}>14</Text>
-            <Text style={styles.statChipLabel}>CANJES RESTANTES</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.statChip, styles.statChipDark]}
-            activeOpacity={0.8}
-            onPress={() => setShowPointsInfo(true)}
-          >
-            <Text style={[styles.statChipNumber, { color: Colors.primaryContainer }]}>1,240</Text>
-            <Text style={[styles.statChipLabel, { color: 'rgba(255,255,255,0.6)' }]}>PUNTOS PASS</Text>
-          </TouchableOpacity>
-=======
           <View style={styles.statChip}>
             <Text style={styles.statChipNumber}>14</Text>
             <Text style={styles.statChipLabel}>CANJES RESTANTES</Text>
@@ -72,7 +37,6 @@ export default function CanjeScreen() {
             <Text style={[styles.statChipNumber, { color: Colors.primaryContainer }]}>1,240</Text>
             <Text style={[styles.statChipLabel, { color: 'rgba(255,255,255,0.6)' }]}>PUNTOS PASS</Text>
           </View>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
         </View>
 
         {/* === TARJETA PRINCIPAL DE CANJE === */}
@@ -110,18 +74,9 @@ export default function CanjeScreen() {
           {activeTab === 'qr' ? (
             /* === VISTA QR === */
             <View style={styles.qrSection}>
-<<<<<<< HEAD
-              {/* Placeholder del QR Code */}
-              <TouchableOpacity
-                style={styles.qrPlaceholder}
-                activeOpacity={0.9}
-                onPress={() => setShowQRInfo(true)}
-              >
-=======
               {/* Placeholder del QR Code
                   En producción usarías la librería: react-native-qrcode-svg */}
               <View style={styles.qrPlaceholder}>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
                 {/* Esquinas del QR (decorativas) */}
                 <View style={[styles.qrCorner, styles.qrCornerTL]} />
                 <View style={[styles.qrCorner, styles.qrCornerTR]} />
@@ -132,19 +87,11 @@ export default function CanjeScreen() {
                 <View style={styles.qrCenterDot}>
                   <MaterialIcons name="restaurant-menu" size={24} color={Colors.primaryContainer} />
                 </View>
-<<<<<<< HEAD
-              </TouchableOpacity>
-
-              <Text style={styles.qrLabel}>FP-2024-001-MS</Text>
-              <Text style={styles.qrSubtitle}>
-                Muestra este código al cajero para canjear tu almuerzo (Toca el QR para ayuda)
-=======
               </View>
 
               <Text style={styles.qrLabel}>FP-2024-001-MS</Text>
               <Text style={styles.qrSubtitle}>
                 Muestra este código al cajero para canjear tu almuerzo
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
               </Text>
 
               {/* Countdown timer simulado */}
@@ -210,23 +157,6 @@ export default function CanjeScreen() {
 
         {/* === HISTORIAL RÁPIDO === */}
         <View style={styles.recentSection}>
-<<<<<<< HEAD
-          <Text style={styles.recentTitle}>Últimos canjes (Toca para ver detalles)</Text>
-          {[
-            { name: 'Artisan Salad Bowl', date: 'Hoy', sede: 'Sede Centro', points: '+18 pts', code: 'FP-8329-1' },
-            { name: 'FoodPass Signature', date: 'Ayer', sede: 'Sede Norte', points: '+14 pts', code: 'FP-8329-2' },
-            { name: 'Kyoto Ramen Bowl', date: 'Mar 20', sede: 'Sede Centro', points: '+21 pts', code: 'FP-8329-3' },
-          ].map((item, i) => (
-            <TouchableOpacity
-              key={i}
-              style={styles.recentItem}
-              activeOpacity={0.7}
-              onPress={() => {
-                setSelectedCanje(item);
-                setShowCanjeModal(true);
-              }}
-            >
-=======
           <Text style={styles.recentTitle}>Últimos canjes</Text>
           {[
             { name: 'Artisan Salad Bowl', date: 'Hoy', sede: 'Sede Centro' },
@@ -234,64 +164,15 @@ export default function CanjeScreen() {
             { name: 'Kyoto Ramen Bowl', date: 'Mar 20', sede: 'Sede Centro' },
           ].map((item, i) => (
             <View key={i} style={styles.recentItem}>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
               <View style={styles.recentDot} />
               <View style={styles.recentInfo}>
                 <Text style={styles.recentName}>{item.name}</Text>
                 <Text style={styles.recentMeta}>{item.date} · {item.sede}</Text>
               </View>
-<<<<<<< HEAD
-              <MaterialIcons name="chevron-right" size={20} color={Colors.onSurfaceVariant} />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-
-      {/* MODALES DE INFORMACIÓN */}
-      <InfoModal
-        visible={showLunchesInfo}
-        title="Canjes Restantes"
-        message={`Dispones de 14 canjes de almuerzo para consumir durante este mes.\n\nRecuerda que tu ciclo mensual se reiniciará el 1 de junio, 2024.`}
-        icon="restaurant"
-        iconColor={Colors.primary}
-        onClose={() => setShowLunchesInfo(false)}
-      />
-
-      <InfoModal
-        visible={showPointsInfo}
-        title="Mis Puntos Pass"
-        message={`Tienes 1,240 Puntos Pass acumulados.\n\nEstos puntos los obtienes al consumir tus almuerzos corporativos diarios y los puedes usar en promociones de platos del chef.`}
-        icon="star"
-        iconColor={Colors.primaryContainer}
-        onClose={() => setShowPointsInfo(false)}
-      />
-
-      <InfoModal
-        visible={showQRInfo}
-        title="¿Cómo canjear mi código?"
-        message={`1. Elige tu plato favorito en la cafetería o restaurante asociado.\n2. Al momento de pagar, muestra este código QR en pantalla al cajero.\n3. El cajero lo escaneará y tu consumo quedará registrado automáticamente.`}
-        icon="help-outline"
-        iconColor={Colors.primary}
-        onClose={() => setShowQRInfo(false)}
-      />
-
-      {/* MODAL DE DETALLE DE CANJE HISTÓRICO */}
-      {selectedCanje && (
-        <InfoModal
-          visible={showCanjeModal}
-          title="Detalle del Canje"
-          message={`Consumo verificado con éxito:\n\nPlato: ${selectedCanje.name}\nFecha: ${selectedCanje.date}\nLugar: ${selectedCanje.sede}\nPuntos ganados: ${selectedCanje.points}\nID de Operación: ${selectedCanje.code}\n\nEstado de Transacción: COMPLETADO`}
-          icon="check-circle"
-          iconColor={Colors.tertiary}
-          onClose={() => setShowCanjeModal(false)}
-        />
-      )}
-=======
             </View>
           ))}
         </View>
       </ScrollView>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
     </SafeAreaView>
   );
 }

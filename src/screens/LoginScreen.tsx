@@ -24,10 +24,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, BorderRadius, Typography } from '../theme/colors';
-<<<<<<< HEAD
-import InfoModal from '../components/shared/InfoModal';
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
 
 // Props que recibe esta pantalla desde el Navigator
 interface LoginScreenProps {
@@ -46,13 +42,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
-<<<<<<< HEAD
-  // Estados para modales informativos
-  const [showForgotModal, setShowForgotModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
   // Función que simula el proceso de login
   const handleLogin = () => {
     setIsLoading(true);
@@ -64,18 +53,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     }, 1500);
   };
 
-<<<<<<< HEAD
-  // Simulación de Login con Google
-  const handleGoogleLogin = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      onLogin();
-    }, 1200);
-  };
-
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
   return (
     // SafeAreaView respeta el notch y la barra inferior del teléfono
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -143,11 +120,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             <View style={styles.fieldGroup}>
               <View style={styles.fieldLabelRow}>
                 <Text style={styles.fieldLabel}>PASSWORD</Text>
-<<<<<<< HEAD
-                <TouchableOpacity onPress={() => setShowForgotModal(true)}>
-=======
                 <TouchableOpacity>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
                   <Text style={styles.forgotText}>¿OLVIDASTE?</Text>
                 </TouchableOpacity>
               </View>
@@ -188,10 +161,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             </View>
 
             {/* Botón de Login con degradado */}
-<<<<<<< HEAD
-=======
             {/* LinearGradient requiere la librería expo-linear-gradient */}
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
             <TouchableOpacity
               onPress={handleLogin}
               activeOpacity={0.9}
@@ -205,10 +175,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 style={styles.loginButton}
               >
                 {isLoading ? (
-<<<<<<< HEAD
-=======
                   // ActivityIndicator es el "spinner" de carga nativo
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <>
@@ -227,17 +194,9 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             </View>
 
             {/* Botón de Google */}
-<<<<<<< HEAD
-            <TouchableOpacity
-              style={styles.googleButton}
-              activeOpacity={0.8}
-              onPress={handleGoogleLogin}
-            >
-=======
             <TouchableOpacity style={styles.googleButton} activeOpacity={0.8}>
               {/* SVG de Google en RN se haría con react-native-svg, 
                   por simplicidad usamos el texto "G" estilizado */}
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
               <View style={styles.googleIcon}>
                 <Text style={styles.googleIconText}>G</Text>
               </View>
@@ -247,11 +206,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>¿No tienes una cuenta? </Text>
-<<<<<<< HEAD
-              <TouchableOpacity onPress={() => setShowRegisterModal(true)}>
-=======
               <TouchableOpacity>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
                 <Text style={styles.footerLink}>Crear Ledger</Text>
               </TouchableOpacity>
             </View>
@@ -270,28 +225,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             </View>
           </View>
 
-<<<<<<< HEAD
-          {/* Modales de Información */}
-          <InfoModal
-            visible={showForgotModal}
-            title="Recuperar Contraseña"
-            message={`Se ha enviado un correo con las instrucciones para restablecer tu contraseña a tu dirección registrada.\n\nPor favor revisa también tu bandeja de correo no deseado.`}
-            icon="mail"
-            iconColor={Colors.primary}
-            onClose={() => setShowForgotModal(false)}
-          />
-
-          <InfoModal
-            visible={showRegisterModal}
-            title="Crear Nueva Cuenta"
-            message={`FoodPass es un servicio exclusivo para empresas.\n\nSi tu empresa ya cuenta con FoodPass, por favor solicita tu invitación de registro al departamento de Recursos Humanos.`}
-            icon="business"
-            iconColor={Colors.primary}
-            onClose={() => setShowRegisterModal(false)}
-          />
-
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

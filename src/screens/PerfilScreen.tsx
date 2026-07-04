@@ -2,55 +2,19 @@
 //
 // Pantalla de perfil del usuario.
 
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
-<<<<<<< HEAD
 import React, { useState } from 'react'; // 1. Agregamos useState
-=======
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
-import React from 'react';
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> origin/master
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-<<<<<<< HEAD
-  Switch,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Colors, BorderRadius, Typography } from '../theme/colors';
-import { useAuth } from '../context/AuthContext';
-import InfoModal from '../components/shared/InfoModal';
-=======
-<<<<<<< HEAD
-=======
-  Switch,
-<<<<<<< HEAD
-  Modal,
-=======
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> origin/master
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, BorderRadius } from '../theme/colors';
-<<<<<<< HEAD
 import SwitchField from '../components/shared/selection/SwitchField'; // 2. Importamos el componente SwitchField
-=======
-<<<<<<< HEAD
-import SoporteChatScreen from './SoporteChatScreen';
-=======
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> origin/master
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
+import { useNavigation } from '@react-navigation/native';
 
 // Tipo para los items del menú de configuración
 type SettingItem = {
@@ -92,118 +56,16 @@ const settingsSections: { title: string; items: SettingItem[] }[] = [
 ];
 
 export default function PerfilScreen() {
-<<<<<<< HEAD
-  const { logout } = useAuth();
-
-  // Estado del interruptor de notificaciones
-  const [notifEnabled, setNotifEnabled] = useState(true);
-
-  // Estados para modal explicativo
-  const [activeInfo, setActiveInfo] = useState<{ title: string; message: string; icon: keyof typeof MaterialIcons.glyphMap } | null>(null);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-
-  const handleSettingPress = (label: string) => {
-    let title = '';
-    let message = '';
-    let icon: keyof typeof MaterialIcons.glyphMap = 'info';
-
-    switch (label) {
-      case 'edit':
-        title = 'Editar Perfil';
-        message = 'Tu información de perfil de FoodPass está sincronizada directamente con el sistema de nómina e identificación corporativa de tu empresa.\n\nPara solicitar cambios en tu nombre, correo o foto, por favor comunícate con el área de Gestión Humana de tu empresa.';
-        icon = 'edit';
-        break;
-      case 'Información personal':
-        title = 'Información Personal';
-        message = 'Datos de Cuenta:\n\n• Nombre: Juan Pérez\n• Cargo: Especialista de TI\n• Correo: juan.perez@empresa.com\n• Teléfono: +57 311 555 1234\n• Corporación: Ledger Corporate SAS\n\nEstos datos son gestionados por el administrador corporativo.';
-        icon = 'person';
-        break;
-      case 'Mi plan':
-        title = 'Detalle del Plan';
-        message = 'Información de Suscripción:\n\n• Plan: FoodPass Premium\n• Cupo Mensual: 22 almuerzos laborales\n• Periodo de Facturación: Mensual automático\n• Estado: ACTIVO\n\nTu suscripción está financiada al 100% por tu empleador como beneficio laboral.';
-        icon = 'workspace-premium';
-        break;
-      case 'Seguridad':
-        title = 'Seguridad de la Cuenta';
-        message = 'La aplicación utiliza el sistema de autenticación única corporativa (SSO).\n\nPara cambiar tu contraseña o actualizar tus credenciales de inicio de sesión, accede al portal de autogestión de seguridad en la intranet de tu compañía.';
-        icon = 'lock';
-        break;
-      case 'Preferencias de menú':
-        title = 'Preferencias Gastronómicas';
-        message = 'Tus opciones preferidas actuales:\n\n• Categoría: Plato Fuerte / Parrilla\n• Alérgenos declarados: Ninguno\n• Dieta: Sin restricciones\n\nNuestras cocinas asociadas consultan estas preferencias para sugerirte platos del chef alineados con tus gustos.';
-        icon = 'restaurant-menu';
-        break;
-      case 'Mis sedes favoritas':
-        title = 'Sedes Autorizadas';
-        message = 'Sedes asociadas a tu plan de retiro:\n\n1. Sede Centro (Default)\n2. Sede Norte\n3. Sede Sur\n\nPuedes retirar tu almuerzo en cualquiera de estas sucursales mostrando tu código QR de canje.';
-        icon = 'place';
-        break;
-      case 'Programa de puntos':
-        title = 'Programa de Puntos Pass';
-        message = 'Puntos Acumulados: 1,240 pts\n\nObtienes 1 punto por cada dólar de almuerzo laboral consumido.\n\nPróxima meta: Acumula 1,500 puntos para desbloquear un almuerzo especial del Chef de cortesía en cualquier sede.';
-        icon = 'card-giftcard';
-        break;
-      case 'Centro de ayuda':
-        title = 'Centro de Soporte';
-        message = 'Preguntas Frecuentes:\n\n• ¿Hasta qué hora puedo canjear? El horario de canje es de 11:30 AM a 2:30 PM.\n• ¿Los almuerzos se acumulan? No, los almuerzos no consumidos en el mes expiran y no se transfieren al siguiente ciclo.';
-        icon = 'help-outline';
-        break;
-      case 'Contactar soporte':
-        title = 'Contacto de Soporte';
-        message = '¿Tienes inconvenientes con la aplicación o con un almuerzo?\n\n• Correo electrónico: soporte@foodpass.co\n• Teléfono de atención: 01-8000-FOODPASS\n• Chat interno: Disponible en la intranet corporativa.\n\nHorario de atención: Lunes a Viernes de 8:00 AM a 6:00 PM.';
-        icon = 'chat-bubble-outline';
-        break;
-      default:
-        return;
-    }
-
-    setActiveInfo({ title, message, icon });
-    setShowInfoModal(true);
-  };
-
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Header personalizado para perfil */}
-      <View style={styles.topBar}>
-        <Text style={styles.topBarTitle}>Mi Perfil</Text>
-        <TouchableOpacity
-          style={styles.topBarAction}
-          onPress={() => handleSettingPress('edit')}
-          activeOpacity={0.7}
-        >
-=======
-<<<<<<< HEAD
   // 3. Estado real para controlar el switch de notificaciones
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const navigation = useNavigation<any>();
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-=======
-<<<<<<< HEAD
-  const [chatVisible, setChatVisible] = useState(false);
-
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Modal del chat de soporte */}
-      <Modal
-        visible={chatVisible}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setChatVisible(false)}
-      >
-        <SoporteChatScreen onClose={() => setChatVisible(false)} />
-      </Modal>
-
-=======
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> origin/master
       {/* Header personalizado para perfil */}
       <View style={styles.topBar}>
         <Text style={styles.topBarTitle}>Mi Perfil</Text>
         <TouchableOpacity style={styles.topBarAction}>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
           <MaterialIcons name="edit" size={20} color={Colors.primary} />
         </TouchableOpacity>
       </View>
@@ -257,9 +119,6 @@ export default function PerfilScreen() {
             <Text style={styles.settingsSectionTitle}>{section.title.toUpperCase()}</Text>
 
             <View style={styles.settingsGroup}>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
               {section.items.map((item, index) => {
                 // 4. Lógica especial para el Toggle usando SwitchField
                 if (item.type === 'toggle') {
@@ -294,6 +153,7 @@ export default function PerfilScreen() {
                         index === section.items.length - 1 && styles.settingItemLast,
                       ]}
                       activeOpacity={0.7}
+                      onPress={()=>{if (item.label==='Centro de ayuda'){navigation.navigate('HelpCenter')}}}
                     >
                       {/* Ícono */}
                       <View style={styles.settingIcon}>
@@ -320,118 +180,18 @@ export default function PerfilScreen() {
                     </TouchableOpacity>
                   );
               })}
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
-              {section.items.map((item, index) => (
-                <TouchableOpacity
-                  key={item.label}
-                  style={[
-                    styles.settingItem,
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                    index === section.items.length - 1 && styles.settingItemLast,
-                  ]}
-                  activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
-                  onPress={() => {
-                    if (item.label === 'Contactar soporte') {
-                      setChatVisible(true);
-                    }
-                  }}
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
-                    // Sin borde en el último elemento
-                    index === section.items.length - 1 && styles.settingItemLast,
-                  ]}
-                  activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
-<<<<<<< HEAD
-                  onPress={() => item.type !== 'toggle' && handleSettingPress(item.label)}
-=======
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
-                >
-                  {/* Ícono */}
-                  <View style={styles.settingIcon}>
-                    <MaterialIcons name={item.icon} size={20} color={Colors.primary} />
-                  </View>
-
-                  {/* Texto */}
-                  <View style={styles.settingText}>
-                    <Text style={styles.settingLabel}>{item.label}</Text>
-                    {item.description && (
-                      <Text style={styles.settingDescription}>{item.description}</Text>
-                    )}
-                  </View>
-
-                  {/* Control del lado derecho */}
-                  {item.type === 'arrow' && (
-                    <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.onSurfaceVariant} />
-                  )}
-                  {item.type === 'toggle' && (
-<<<<<<< HEAD
-                    // Switch es el componente de toggle nativo
-                    <Switch
-                      value={notifEnabled}
-                      onValueChange={setNotifEnabled}
-                      trackColor={{ false: Colors.surfaceContainerHigh, true: Colors.tertiaryContainer }}
-                      thumbColor={notifEnabled ? Colors.tertiary : Colors.outlineVariant}
-=======
-<<<<<<< HEAD
-=======
-                    // Switch es el componente de toggle nativo
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
-                    <Switch
-                      value={item.value}
-                      trackColor={{ false: Colors.surfaceContainerHigh, true: Colors.tertiaryContainer }}
-                      thumbColor={item.value ? Colors.tertiary : Colors.outlineVariant}
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
-                    />
-                  )}
-                  {item.type === 'badge' && item.badge && (
-                    <View style={[styles.settingBadge, { backgroundColor: item.badgeColor }]}>
-                      <Text style={styles.settingBadgeText}>{item.badge}</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ))}
-<<<<<<< HEAD
-=======
->>>>>>> origin/master
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
             </View>
           </View>
         ))}
 
         {/* Botón de cerrar sesión */}
-<<<<<<< HEAD
-        <TouchableOpacity
-          style={styles.logoutButton}
-          activeOpacity={0.8}
-          onPress={logout}
-        >
-=======
         <TouchableOpacity style={styles.logoutButton} activeOpacity={0.8}>
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
           <MaterialIcons name="logout" size={20} color={Colors.error} />
           <Text style={styles.logoutText}>Cerrar sesión</Text>
         </TouchableOpacity>
 
         <View style={{ height: 24 }} />
       </ScrollView>
-<<<<<<< HEAD
-
-      {/* MODAL DE INFORMACIÓN */}
-      {activeInfo && (
-        <InfoModal
-          visible={showInfoModal}
-          title={activeInfo.title}
-          message={activeInfo.message}
-          icon={activeInfo.icon}
-          onClose={() => setShowInfoModal(false)}
-        />
-      )}
-=======
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
     </SafeAreaView>
   );
 }
@@ -578,17 +338,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-<<<<<<< HEAD
-    // Separador sutil en el fondo (no en el último)
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-    // Separador sutil en el fondo (no en el último)
->>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
->>>>>>> origin/master
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
     borderBottomWidth: 1,
     borderBottomColor: Colors.surfaceContainerLow,
   },
@@ -645,12 +394,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.error,
   },
-<<<<<<< HEAD
 });
-=======
-<<<<<<< HEAD
-});
-=======
-});
->>>>>>> origin/master
->>>>>>> e8da3abcd0480b37f872a7006ab961f2b4bce4f7
