@@ -10,6 +10,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, Typography } from '../../theme/colors';
 import NotificationModal from './feedback/NotificationModal'; // <--- Agregado el import
+import { useNavigation } from '@react-navigation/native';
+
 
 interface HeaderProps {
   title: string;
@@ -18,6 +20,7 @@ interface HeaderProps {
 }
 
 export default function Header({ title, showSearch = false, onSearchPress }: HeaderProps) {
+  const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false); // <--- Estado para el modal
 
@@ -51,10 +54,13 @@ export default function Header({ title, showSearch = false, onSearchPress }: Hea
           </View>
         </TouchableOpacity>
 
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>MS</Text>
+        <TouchableOpacity
+          style={styles.avatar}
+          activeOpacity={0.7}
+              onPress={()=>navigation.navigate('Perfil')}>
+             <Text style={styles.avatarText}>MS</Text>
+        </TouchableOpacity>
         </View>
-      </View>
 
       {/* El Modal de Notificaciones */}
       <NotificationModal 

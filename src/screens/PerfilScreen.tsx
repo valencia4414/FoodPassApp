@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, BorderRadius } from '../theme/colors';
 import SwitchField from '../components/shared/selection/SwitchField'; // 2. Importamos el componente SwitchField
+import { useNavigation } from '@react-navigation/native';
 
 // Tipo para los items del menú de configuración
 type SettingItem = {
@@ -57,6 +58,7 @@ const settingsSections: { title: string; items: SettingItem[] }[] = [
 export default function PerfilScreen() {
   // 3. Estado real para controlar el switch de notificaciones
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const navigation = useNavigation<any>();
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -151,6 +153,7 @@ export default function PerfilScreen() {
                         index === section.items.length - 1 && styles.settingItemLast,
                       ]}
                       activeOpacity={0.7}
+                      onPress={()=>{if (item.label==='Centro de ayuda'){navigation.navigate('HelpCenter')}}}
                     >
                       {/* Ícono */}
                       <View style={styles.settingIcon}>

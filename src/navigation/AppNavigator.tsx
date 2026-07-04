@@ -29,8 +29,10 @@ import HistorialScreen from '../screens/HistorialScreen';
 import CanjeScreen from '../screens/CanjeScreen';
 import PagosScreen from '../screens/PagosScreen';
 import PerfilScreen from '../screens/PerfilScreen';
-
+import HelpCenterScreen from '../screens/HelpCenterScreen';
 import { Colors } from '../theme/colors';
+
+
 
 // Creamos los navegadores
 // Tab → para las pantallas principales (con la barra inferior)
@@ -115,7 +117,9 @@ export default function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
           // Si el usuario está autenticado, mostramos las tabs principales
-          <Stack.Screen name="Main" component={MainTabs} />
+          <>
+            {/* Si el usuario está autenticado */}
+            <Stack.Screen name="Main" component={MainTabs} /><Stack.Screen name="HelpCenter" component={HelpCenterScreen} /></>
         ) : (
           // Si no, mostramos el login y le pasamos la función para autenticarse
           <Stack.Screen name="Login">
