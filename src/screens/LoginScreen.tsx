@@ -24,6 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, BorderRadius, Typography } from '../theme/colors';
+import { Image } from 'react-native';
 
 // Props que recibe esta pantalla desde el Navigator
 interface LoginScreenProps {
@@ -76,16 +77,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         >
           {/* === TARJETA PRINCIPAL === */}
           <View style={styles.card}>
-
-            {/* === SECCIÓN DEL LOGO === */}
-            <View style={styles.logoSection}>
-              {/* Ícono del logo — cuadrado con fondo verde oscuro */}
-              <View style={styles.logoIcon}>
-                <MaterialIcons name="restaurant-menu" size={36} color={Colors.primaryContainer} />
-              </View>
-              <Text style={styles.appTitle}>FoodPass</Text>
-              <Text style={styles.appSubtitle}>The Artisanal Ledger</Text>
-            </View>
+           {/* === SECCIÓN DEL LOGO === */}
+             <View style={styles.logoSection}>
+               <Image
+                  source={require('../../assets/foodpass_logo.png')}
+                    style={styles.logoImage}
+                     resizeMode="contain"
+                  />
+               </View>
 
             {/* === FORMULARIO === */}
             {/* Campo de Email */}
@@ -295,18 +294,6 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 10,
   },
-  appTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: Colors.onSurface,
-    letterSpacing: -0.5,
-  },
-  appSubtitle: {
-    fontSize: 12,
-    color: Colors.onSurfaceVariant,
-    fontWeight: '500',
-    marginTop: 2,
-  },
   fieldGroup: {
     marginBottom: 16,
   },
@@ -473,4 +460,10 @@ const styles = StyleSheet.create({
     color: Colors.onSurfaceVariant,
     letterSpacing: 1.2,
   },
+
+logoImage: {
+  width: 220,
+  height: 90,
+  alignSelf: 'center',
+},
 });
