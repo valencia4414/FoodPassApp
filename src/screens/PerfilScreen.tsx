@@ -68,6 +68,16 @@ export default function PerfilScreen() {
         <TouchableOpacity style={styles.topBarAction}>
           <MaterialIcons name="edit" size={20} color={Colors.primary} />
         </TouchableOpacity>
+        <TouchableOpacity
+      onPress={() => {
+        if (item.label === 'Seguridad') {
+          navigation.navigate('Security'); // <--- ESTO ES LO QUE HACE EL SALTO
+        }
+      }}
+    >
+      {/* contenido del botón */}
+    </TouchableOpacity>
+  );
       </View>
 
       <ScrollView

@@ -29,6 +29,7 @@ import HistorialScreen from '../screens/HistorialScreen';
 import CanjeScreen from '../screens/CanjeScreen';
 import PagosScreen from '../screens/PagosScreen';
 import PerfilScreen from '../screens/PerfilScreen';
+import SecurityScreen from '../screens/SecurityScreen';
 import HelpCenterScreen from '../screens/HelpCenterScreen';
 import { Colors } from '../theme/colors';
 
@@ -119,7 +120,7 @@ export default function AppNavigator() {
           // Si el usuario está autenticado, mostramos las tabs principales
           <>
             {/* Si el usuario está autenticado */}
-            <Stack.Screen name="Main" component={MainTabs} /><Stack.Screen name="HelpCenter" component={HelpCenterScreen} /></>
+            <Stack.Screen name="Main" component={MainTabs} /><Stack.Screen name="Security" component={SecurityScreen} /><Stack.Screen name="HelpCenter" component={HelpCenterScreen} /></>
         ) : (
           // Si no, mostramos el login y le pasamos la función para autenticarse
           <Stack.Screen name="Login">

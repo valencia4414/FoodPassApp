@@ -1,12 +1,4 @@
 // src/screens/MenuScreen.tsx
-//
-// Pantalla del menú de comidas.
-//
-// Conceptos nuevos:
-// - FlatList: Lista eficiente para renderizar muchos elementos
-// - numColumns: Para hacer grids con FlatList
-// - useState para filtros interactivos
-
 import React, { useState } from 'react';
 import {
   View,
@@ -17,6 +9,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  TextInput, // <-- Importado para la búsqueda
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -24,13 +17,10 @@ import Header from '../components/shared/Header';
 import { Colors, BorderRadius } from '../theme/colors';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-// Calculamos el ancho de cada tarjeta para el grid de 2 columnas
-const CARD_WIDTH = (SCREEN_WIDTH - 40 - 12) / 2; // padding*2 - gap
+const CARD_WIDTH = (SCREEN_WIDTH - 40 - 12) / 2;
 
-// Categorías del filtro
 const categories = ['Todos', 'Entradas', 'Plato Fuerte', 'Postres'];
 
-// Datos del menú
 const menuItems = [
   {
     id: '1',
@@ -91,52 +81,38 @@ const menuItems = [
   },
 ];
 
-// Tipo para los items del menú
 type MenuItem = typeof menuItems[0];
 
 export default function MenuScreen() {
   const [activeCategory, setActiveCategory] = useState('Todos');
+  
+  // --- NUEVOS ESTADOS PARA BÚSQUEDA ---
+  const [searchText, setSearchText] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Filtramos los items según la categoría seleccionada
-  const filteredItems = activeCategory === 'Todos'
-    ? menuItems
-    : menuItems.filter(item => item.category === activeCategory);
+  // Lógica de filtrado combinada (Categoría + Texto)
+  const filteredItems = menuItems.filter(item => {
+    const matchesCategory = activeCategory === 'Todos' || item.category === activeCategory;
+    const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase()) || 
+                          item.description.toLowerCase().includes(searchText.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
-  // Componente para renderizar cada tarjeta del menú.
-  // Lo definimos como una función separada para que FlatList sea más eficiente.
   const renderMenuCard = ({ item }: { item: MenuItem }) => (
     <View style={styles.card}>
-      {/* Imagen del plato */}
       <View style={styles.cardImageContainer}>
-        <Image
-          source={{ uri: item.image }}
-          style={styles.cardImage}
-          // resizeMode controla cómo se ajusta la imagen al contenedor
-          resizeMode="cover"
-        />
-        {/* Badge si existe */}
+        <Image source={{ uri: item.image }} style={styles.cardImage} resizeMode="cover" />
         {item.badge && (
-          <View style={[
-            styles.badge,
-            item.badgeType === 'green' ? styles.badgeGreen : styles.badgeOrange
-          ]}>
-            <Text style={[
-              styles.badgeText,
-              item.badgeType === 'green' ? styles.badgeTextGreen : styles.badgeTextOrange
-            ]}>
+          <View style={[styles.badge, item.badgeType === 'green' ? styles.badgeGreen : styles.badgeOrange]}>
+            <Text style={[styles.badgeText, item.badgeType === 'green' ? styles.badgeTextGreen : styles.badgeTextOrange]}>
               {item.badge.toUpperCase()}
             </Text>
           </View>
         )}
       </View>
-
-      {/* Contenido de la tarjeta */}
       <View style={styles.cardContent}>
         <Text style={styles.cardName} numberOfLines={2}>{item.name}</Text>
-        {/* numberOfLines limita el texto a N líneas con "..." al final */}
         <Text style={styles.cardDescription} numberOfLines={2}>{item.description}</Text>
-
-        {/* Precio y botón */}
         <View style={styles.cardFooter}>
           <Text style={styles.cardPrice}>{item.price}</Text>
           <TouchableOpacity style={styles.selectButton} activeOpacity={0.8}>
@@ -149,257 +125,156 @@ export default function MenuScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <Header title="Menú Digital" showSearch />
+      
+      {/* --- CABECERA CON BUSCADOR DINÁMICO --- */}
+      <View style={styles.headerWrapper}>
+        <Header title="Menú Digital" showSearch />
+        
+        {/* LUPA INVISIBLE: Cae justo encima del icono de la lupa del Header */}
+        {!isSearching && (
+          <TouchableOpacity 
+            style={styles.searchActivator} 
+            onPress={() => setIsSearching(true)} 
+          />
+        )}
 
-      {/* Banner del plato destacado */}
-      <View style={styles.featuredBanner}>
-        <View style={styles.featuredOverlay}>
-          <View style={styles.chefBadge}>
-            <Text style={styles.chefBadgeText}>RECOMENDACIÓN DEL CHEF</Text>
-          </View>
-          <Text style={styles.featuredTitle}>Corte Artisan{'\n'}con Finas Hierbas</Text>
-          <View style={styles.featuredFooter}>
-            <TouchableOpacity style={styles.featuredButton} activeOpacity={0.8}>
-              <MaterialIcons name="shopping-cart" size={16} color={Colors.onPrimaryContainer} />
-              <Text style={styles.featuredButtonText}>Seleccionar</Text>
+        {/* BARRA DE BÚSQUEDA ACTIVA: Tapa el header cuando se activa */}
+        {isSearching && (
+          <View style={styles.fullSearchBar}>
+            <TouchableOpacity onPress={() => { setIsSearching(false); setSearchText(''); }}>
+              <MaterialIcons name="arrow-back" size={24} color={Colors.primary} />
             </TouchableOpacity>
-            <Text style={styles.featuredPrice}>$45.50</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder="¿Qué te apetece hoy?"
+              autoFocus
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+            {searchText.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchText('')}>
+                <MaterialIcons name="close" size={22} color="#888" />
+              </TouchableOpacity>
+            )}
           </View>
-        </View>
+        )}
       </View>
 
-      {/* Filtros de categoría */}
-      {/* Usamos ScrollView horizontal para que quepan todos los filtros */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filtersContainer}
-        style={styles.filtersScroll}
-      >
-        {categories.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            style={[
-              styles.filterChip,
-              activeCategory === cat && styles.filterChipActive,
-            ]}
-            onPress={() => setActiveCategory(cat)}
-            activeOpacity={0.8}
-          >
-            <Text style={[
-              styles.filterChipText,
-              activeCategory === cat && styles.filterChipTextActive,
-            ]}>
-              {cat}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Banner destacado */}
+        <View style={styles.featuredBanner}>
+          <View style={styles.featuredOverlay}>
+            <View style={styles.chefBadge}><Text style={styles.chefBadgeText}>RECOMENDACIÓN DEL CHEF</Text></View>
+            <Text style={styles.featuredTitle}>Corte Artisan{'\n'}con Finas Hierbas</Text>
+            <View style={styles.featuredFooter}>
+              <TouchableOpacity style={styles.featuredButton} activeOpacity={0.8}>
+                <MaterialIcons name="shopping-cart" size={16} color={Colors.onPrimaryContainer} />
+                <Text style={styles.featuredButtonText}>Seleccionar</Text>
+              </TouchableOpacity>
+              <Text style={styles.featuredPrice}>$45.50</Text>
+            </View>
+          </View>
+        </View>
 
-      {/* Grid de platos con FlatList
-          FlatList es mejor que ScrollView + .map() para listas largas porque:
-          - Solo renderiza los elementos visibles en pantalla
-          - Recicla los elementos cuando hacen scroll (como RecyclerView en Android)
-          - Tiene optimizaciones automáticas de rendimiento */}
-      <FlatList
-        data={filteredItems}
-        renderItem={renderMenuCard}
-        keyExtractor={(item) => item.id}
-        numColumns={2}                      // Grid de 2 columnas
-        columnWrapperStyle={styles.row}     // Estilo para cada fila del grid
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+        {/* Filtros de categoría */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContainer} style={styles.filtersScroll}>
+          {categories.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[styles.filterChip, activeCategory === cat && styles.filterChipActive]}
+              onPress={() => setActiveCategory(cat)}
+            >
+              <Text style={[styles.filterChipText, activeCategory === cat && styles.filterChipTextActive]}>{cat}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <FlatList
+          data={filteredItems}
+          renderItem={renderMenuCard}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.listContent}
+          scrollEnabled={false}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>No se encontraron platos.</Text>
+          }
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  // BANNER DESTACADO
-  featuredBanner: {
-    marginHorizontal: 20,
-    marginTop: 16,
-    height: 160,
-    borderRadius: BorderRadius.xxxl,
-    backgroundColor: Colors.inverseSurface,
-    overflow: 'hidden',
-    marginBottom: 16,
-  },
-  featuredOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(39, 53, 23, 0.75)',
-    padding: 20,
-    justifyContent: 'space-between',
-  },
-  chefBadge: {
-    backgroundColor: Colors.tertiaryContainer,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
-    alignSelf: 'flex-start',
-  },
-  chefBadgeText: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: Colors.onTertiaryContainer,
-    letterSpacing: 1,
-  },
-  featuredTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#fff',
-    letterSpacing: -0.5,
-    lineHeight: 28,
-  },
-  featuredFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  featuredButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: Colors.primaryContainer,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: BorderRadius.xl,
-  },
-  featuredButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: Colors.onPrimaryContainer,
-  },
-  featuredPrice: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#fff',
-  },
-  // FILTROS
-  filtersScroll: {
-    maxHeight: 50,
-    marginBottom: 8,
-  },
-  filtersContainer: {
-    paddingHorizontal: 20,
-    gap: 8,
-    alignItems: 'center',
-  },
-  filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-    backgroundColor: Colors.surfaceContainer,
-  },
-  filterChipActive: {
-    backgroundColor: Colors.surfaceContainerLowest,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: Colors.onSurfaceVariant,
-  },
-  filterChipTextActive: {
-    color: Colors.onSurface,
-    fontWeight: '700',
-  },
-  // LISTA
-  listContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  row: {
-    gap: 12,
-    marginBottom: 12,
-  },
-  // TARJETA DE PLATO
-  card: {
-    width: CARD_WIDTH,
-    backgroundColor: Colors.surfaceContainerLowest,
-    borderRadius: BorderRadius.xxl,
-    overflow: 'hidden',
-    shadowColor: '#121f05',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  cardImageContainer: {
-    height: 130,
+  safeArea: { flex: 1, backgroundColor: Colors.background },
+  
+  // === ESTILOS DEL BUSCADOR INTERACTIVO ===
+  headerWrapper: {
     position: 'relative',
+    zIndex: 100,
   },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-  },
-  badge: {
+  searchActivator: {
     position: 'absolute',
+    right: 85, // Ajusta esto para que caiga sobre la lupa del Header
     top: 10,
-    left: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
+    width: 45,
+    height: 45,
+    borderRadius: 22,
+    zIndex: 101,
   },
-  badgeGreen: {
-    backgroundColor: Colors.tertiaryContainer,
-  },
-  badgeOrange: {
-    backgroundColor: Colors.primaryContainer,
-  },
-  badgeText: {
-    fontSize: 8,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  badgeTextGreen: {
-    color: Colors.onTertiaryContainer,
-  },
-  badgeTextOrange: {
-    color: Colors.onPrimaryContainer,
-  },
-  cardContent: {
-    padding: 14,
-  },
-  cardName: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: Colors.onSurface,
-    marginBottom: 4,
-    lineHeight: 18,
-  },
-  cardDescription: {
-    fontSize: 11,
-    color: Colors.onSurfaceVariant,
-    lineHeight: 15,
-    marginBottom: 12,
-  },
-  cardFooter: {
-    gap: 8,
-  },
-  cardPrice: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: Colors.primaryContainer,
-    letterSpacing: -0.5,
-  },
-  selectButton: {
-    backgroundColor: Colors.primaryContainer,
-    paddingVertical: 10,
-    borderRadius: BorderRadius.lg,
+  fullSearchBar: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    height: 70, // Ajuste al alto de tu header
+    zIndex: 102,
+    elevation: 4,
   },
-  selectButtonText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: Colors.onPrimaryContainer,
+  inputField: {
+    flex: 1,
+    marginLeft: 15,
+    fontSize: 16,
+    color: '#000',
+    fontWeight: '500',
   },
+
+  // === RESTO DE ESTILOS ===
+  featuredBanner: { marginHorizontal: 20, marginTop: 16, height: 160, borderRadius: BorderRadius.xxxl, backgroundColor: Colors.inverseSurface, overflow: 'hidden', marginBottom: 16 },
+  featuredOverlay: { flex: 1, backgroundColor: 'rgba(39, 53, 23, 0.75)', padding: 20, justifyContent: 'space-between' },
+  chefBadge: { backgroundColor: Colors.tertiaryContainer, paddingHorizontal: 10, paddingVertical: 3, borderRadius: BorderRadius.full, alignSelf: 'flex-start' },
+  chefBadgeText: { fontSize: 9, fontWeight: '700', color: Colors.onTertiaryContainer, letterSpacing: 1 },
+  featuredTitle: { fontSize: 22, fontWeight: '800', color: '#fff', letterSpacing: -0.5, lineHeight: 28 },
+  featuredFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  featuredButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: Colors.primaryContainer, paddingHorizontal: 16, paddingVertical: 10, borderRadius: BorderRadius.xl },
+  featuredButtonText: { fontSize: 13, fontWeight: '700', color: Colors.onPrimaryContainer },
+  featuredPrice: { fontSize: 24, fontWeight: '800', color: '#fff' },
+  filtersScroll: { maxHeight: 50, marginBottom: 8 },
+  filtersContainer: { paddingHorizontal: 20, gap: 8, alignItems: 'center' },
+  filterChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: BorderRadius.full, backgroundColor: Colors.surfaceContainer },
+  filterChipActive: { backgroundColor: Colors.surfaceContainerLowest, elevation: 3 },
+  filterChipText: { fontSize: 13, fontWeight: '600', color: Colors.onSurfaceVariant },
+  filterChipTextActive: { color: Colors.onSurface, fontWeight: '700' },
+  listContent: { paddingHorizontal: 20, paddingBottom: 20 },
+  row: { gap: 12, marginBottom: 12 },
+  card: { width: CARD_WIDTH, backgroundColor: Colors.surfaceContainerLowest, borderRadius: BorderRadius.xxl, overflow: 'hidden', elevation: 3 },
+  cardImageContainer: { height: 130 },
+  cardImage: { width: '100%', height: '100%' },
+  badge: { position: 'absolute', top: 10, left: 10, paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
+  badgeGreen: { backgroundColor: Colors.tertiaryContainer },
+  badgeOrange: { backgroundColor: Colors.primaryContainer },
+  badgeText: { fontSize: 8, fontWeight: '700', letterSpacing: 1 },
+  badgeTextGreen: { color: Colors.onTertiaryContainer },
+  badgeTextOrange: { color: Colors.onPrimaryContainer },
+  cardContent: { padding: 14 },
+  cardName: { fontSize: 14, fontWeight: '700', color: Colors.onSurface, marginBottom: 4 },
+  cardDescription: { fontSize: 11, color: Colors.onSurfaceVariant, lineHeight: 15, marginBottom: 12 },
+  cardFooter: { gap: 8 },
+  cardPrice: { fontSize: 20, fontWeight: '800', color: Colors.primaryContainer },
+  selectButton: { backgroundColor: Colors.primaryContainer, paddingVertical: 10, borderRadius: BorderRadius.lg, alignItems: 'center' },
+  selectButtonText: { fontSize: 12, fontWeight: '700', color: Colors.onPrimaryContainer },
+  emptyText: { textAlign: 'center', marginTop: 20, color: Colors.onSurfaceVariant },
 });
