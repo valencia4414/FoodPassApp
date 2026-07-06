@@ -2,7 +2,7 @@
 //
 // Pantalla de perfil del usuario.
 
-import React, { useState } from 'react'; // 1. Agregamos useState
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, BorderRadius } from '../theme/colors';
-import SwitchField from '../components/shared/selection/SwitchField'; // 2. Importamos el componente SwitchField
+import SwitchField from '../components/shared/selection/SwitchField';
 import { useNavigation } from '@react-navigation/native';
+import FavoriteLocationsModal from '../components/shared/selection/FavoriteLocationsModal';
 
 // Tipo para los items del menú de configuración
 type SettingItem = {
@@ -56,13 +57,12 @@ const settingsSections: { title: string; items: SettingItem[] }[] = [
 ];
 
 export default function PerfilScreen() {
-  // 3. Estado real para controlar el switch de notificaciones
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [favModalVisible, setFavModalVisible] = useState(false); // Estado para el modal de sedes
   const navigation = useNavigation<any>();
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Header personalizado para perfil */}
       <View style={styles.topBar}>
         <Text style={styles.topBarTitle}>Mi Perfil</Text>
         <TouchableOpacity style={styles.topBarAction}>
@@ -74,12 +74,9 @@ export default function PerfilScreen() {
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {/* === TARJETA DE PERFIL === */}
         <View style={styles.profileCard}>
-          {/* Avatar grande */}
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>JP</Text>
-            {/* Badge de verificado */}
             <View style={styles.verifiedBadge}>
               <MaterialIcons name="verified" size={18} color={Colors.tertiary} />
             </View>
@@ -88,13 +85,11 @@ export default function PerfilScreen() {
           <Text style={styles.profileName}>Juan Perez</Text>
           <Text style={styles.profileEmail}>juan.perez@empresa.com</Text>
 
-          {/* Chip de membresía */}
           <View style={styles.membershipChip}>
             <MaterialIcons name="workspace-premium" size={14} color={Colors.onPrimaryContainer} />
             <Text style={styles.membershipText}>Premium Member</Text>
           </View>
 
-          {/* Stats del perfil */}
           <View style={styles.profileStats}>
             <View style={styles.profileStat}>
               <Text style={styles.profileStatNumber}>128</Text>
@@ -113,23 +108,17 @@ export default function PerfilScreen() {
           </View>
         </View>
 
-        {/* === SECCIONES DE CONFIGURACIÓN === */}
         {settingsSections.map((section) => (
           <View key={section.title} style={styles.settingsSection}>
             <Text style={styles.settingsSectionTitle}>{section.title.toUpperCase()}</Text>
 
             <View style={styles.settingsGroup}>
               {section.items.map((item, index) => {
-                // 4. Lógica especial para el Toggle usando SwitchField
+                const isLast = index === section.items.length - 1;
+
                 if (item.type === 'toggle') {
                     return (
-                        <View 
-                            key={item.label} 
-                            style={[
-                                styles.settingItem, 
-                                index === section.items.length - 1 && styles.settingItemLast
-                            ]}
-                        >
+                        <View key={item.label} style={[styles.settingItem, isLast && styles.settingItemLast]}>
                             <View style={styles.settingIcon}>
                                 <MaterialIcons name={item.icon} size={20} color={Colors.primary} />
                             </View>
@@ -144,23 +133,23 @@ export default function PerfilScreen() {
                     );
                 }
 
-                // 5. El resto de los botones (Arrow y Badge) se mantienen igual
                 return (
                     <TouchableOpacity
                       key={item.label}
-                      style={[
-                        styles.settingItem,
-                        index === section.items.length - 1 && styles.settingItemLast,
-                      ]}
+                      style={[styles.settingItem, isLast && styles.settingItemLast]}
                       activeOpacity={0.7}
-                      onPress={()=>{if (item.label==='Centro de ayuda'){navigation.navigate('HelpCenter')}}}
+                      onPress={() => {
+                        if (item.label === 'Centro de ayuda') {
+                          navigation.navigate('HelpCenter');
+                        } else if (item.label === 'Mis sedes favoritas') {
+                          setFavModalVisible(true); // Abrir el modal
+                        }
+                      }}
                     >
-                      {/* Ícono */}
                       <View style={styles.settingIcon}>
                         <MaterialIcons name={item.icon} size={20} color={Colors.primary} />
                       </View>
     
-                      {/* Texto */}
                       <View style={styles.settingText}>
                         <Text style={styles.settingLabel}>{item.label}</Text>
                         {item.description && (
@@ -168,7 +157,6 @@ export default function PerfilScreen() {
                         )}
                       </View>
     
-                      {/* Control del lado derecho */}
                       {item.type === 'arrow' && (
                         <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.onSurfaceVariant} />
                       )}
@@ -184,7 +172,6 @@ export default function PerfilScreen() {
           </View>
         ))}
 
-        {/* Botón de cerrar sesión */}
         <TouchableOpacity style={styles.logoutButton} activeOpacity={0.8}>
           <MaterialIcons name="logout" size={20} color={Colors.error} />
           <Text style={styles.logoutText}>Cerrar sesión</Text>
@@ -192,206 +179,46 @@ export default function PerfilScreen() {
 
         <View style={{ height: 24 }} />
       </ScrollView>
+
+      {/* MODAL DE SEDES FAVORITAS */}
+      <FavoriteLocationsModal 
+        visible={favModalVisible} 
+        onClose={() => setFavModalVisible(false)} 
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.surface,
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: 'rgba(255,255,255,0.85)',
-    shadowColor: '#121f05',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  topBarTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: Colors.onBackground,
-    letterSpacing: -0.3,
-  },
-  topBarAction: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.surfaceContainerLow,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  safeArea: { flex: 1, backgroundColor: Colors.surface },
+  topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, backgroundColor: 'rgba(255,255,255,0.85)', elevation: 3 },
+  topBarTitle: { fontSize: 20, fontWeight: '800', color: Colors.onBackground, letterSpacing: -0.3 },
+  topBarAction: { width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.surfaceContainerLow, justifyContent: 'center', alignItems: 'center' },
   scroll: { flex: 1 },
-  // TARJETA DE PERFIL
-  profileCard: {
-    margin: 20,
-    backgroundColor: Colors.inverseSurface,
-    borderRadius: BorderRadius.xxxl,
-    padding: 28,
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.primaryContainer,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 14,
-    position: 'relative',
-  },
-  avatarText: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: Colors.onPrimaryContainer,
-  },
-  verifiedBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: Colors.surfaceContainerLowest,
-    borderRadius: 12,
-    padding: 2,
-  },
-  profileName: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  profileEmail: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.6)',
-    marginBottom: 14,
-  },
-  membershipChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: Colors.primaryContainer,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-    marginBottom: 24,
-  },
-  membershipText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: Colors.onPrimaryContainer,
-  },
-  profileStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: BorderRadius.xl,
-    padding: 16,
-    width: '100%',
-    justifyContent: 'space-around',
-  },
-  profileStat: {
-    alignItems: 'center',
-  },
-  profileStatNumber: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#fff',
-    letterSpacing: -0.5,
-  },
-  profileStatLabel: {
-    fontSize: 8,
-    fontWeight: '700',
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 1,
-    marginTop: 2,
-  },
-  profileStatDivider: {
-    width: 1,
-    height: 36,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-  },
-  // CONFIGURACIÓN
-  settingsSection: {
-    marginBottom: 8,
-    paddingHorizontal: 20,
-  },
-  settingsSectionTitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Colors.onSurfaceVariant,
-    letterSpacing: 1.5,
-    marginBottom: 8,
-    paddingLeft: 4,
-  },
-  settingsGroup: {
-    backgroundColor: Colors.surfaceContainerLowest,
-    borderRadius: BorderRadius.xxl,
-    overflow: 'hidden',
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.surfaceContainerLow,
-  },
-  settingItemLast: {
-    borderBottomWidth: 0,
-  },
-  settingIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: Colors.surfaceContainerLow,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  settingText: {
-    flex: 1,
-  },
-  settingLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.onSurface,
-  },
-  settingDescription: {
-    fontSize: 12,
-    color: Colors.onSurfaceVariant,
-    marginTop: 1,
-  },
-  settingBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: BorderRadius.full,
-  },
-  settingBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Colors.onPrimaryContainer,
-    letterSpacing: 0.5,
-  },
-  // LOGOUT
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    marginHorizontal: 20,
-    marginTop: 8,
-    paddingVertical: 16,
-    backgroundColor: Colors.errorContainer,
-    borderRadius: BorderRadius.xl,
-  },
-  logoutText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: Colors.error,
-  },
+  profileCard: { margin: 20, backgroundColor: Colors.inverseSurface, borderRadius: BorderRadius.xxxl, padding: 28, alignItems: 'center' },
+  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: Colors.primaryContainer, justifyContent: 'center', alignItems: 'center', marginBottom: 14, position: 'relative' },
+  avatarText: { fontSize: 28, fontWeight: '800', color: Colors.onPrimaryContainer },
+  verifiedBadge: { position: 'absolute', bottom: 0, right: 0, backgroundColor: Colors.surfaceContainerLowest, borderRadius: 12, padding: 2 },
+  profileName: { fontSize: 22, fontWeight: '800', color: '#fff', marginBottom: 4 },
+  profileEmail: { fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 14 },
+  membershipChip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: Colors.primaryContainer, paddingHorizontal: 14, paddingVertical: 6, borderRadius: BorderRadius.full, marginBottom: 24 },
+  membershipText: { fontSize: 12, fontWeight: '700', color: Colors.onPrimaryContainer },
+  profileStats: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: BorderRadius.xl, padding: 16, width: '100%', justifyContent: 'space-around' },
+  profileStat: { alignItems: 'center' },
+  profileStatNumber: { fontSize: 20, fontWeight: '800', color: '#fff', letterSpacing: -0.5 },
+  profileStatLabel: { fontSize: 8, fontWeight: '700', color: 'rgba(255,255,255,0.5)', letterSpacing: 1, marginTop: 2 },
+  profileStatDivider: { width: 1, height: 36, backgroundColor: 'rgba(255,255,255,0.15)' },
+  settingsSection: { marginBottom: 8, paddingHorizontal: 20 },
+  settingsSectionTitle: { fontSize: 10, fontWeight: '700', color: Colors.onSurfaceVariant, letterSpacing: 1.5, marginBottom: 8, paddingLeft: 4 },
+  settingsGroup: { backgroundColor: Colors.surfaceContainerLowest, borderRadius: BorderRadius.xxl, overflow: 'hidden' },
+  settingItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: Colors.surfaceContainerLow },
+  settingItemLast: { borderBottomWidth: 0 },
+  settingIcon: { width: 40, height: 40, borderRadius: 12, backgroundColor: Colors.surfaceContainerLow, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  settingText: { flex: 1 },
+  settingLabel: { fontSize: 14, fontWeight: '600', color: Colors.onSurface },
+  settingDescription: { fontSize: 12, color: Colors.onSurfaceVariant, marginTop: 1 },
+  settingBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: BorderRadius.full },
+  settingBadgeText: { fontSize: 10, fontWeight: '700', color: Colors.onPrimaryContainer, letterSpacing: 0.5 },
+  logoutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginHorizontal: 20, marginTop: 8, paddingVertical: 16, backgroundColor: Colors.errorContainer, borderRadius: BorderRadius.xl },
+  logoutText: { fontSize: 15, fontWeight: '700', color: Colors.error },
 });
