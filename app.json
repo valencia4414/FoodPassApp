@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "FoodPassApp",
+    "slug": "FoodPassApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/foodpass_logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/foodpass_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/foodpass_logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/foodpass_logo.png"
+    }
+  }
+}
